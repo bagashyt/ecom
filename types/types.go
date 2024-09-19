@@ -6,19 +6,11 @@ import (
 
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
-	GetUserByID()
-	CreateUser()
+	GetUserByID(id int) (*User, error)
+	CreateUser(User) error
 }
 
 type mockUserStore struct{}
-
-func GetUserByEmail(email string) (*User, error) {
-	return nil, nil
-}
-
-func GetUserByID() {}
-
-func CreateUser() {}
 
 type User struct {
 	ID        int       `json:"id"`
