@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/bagashyt/ecom/service/auth"
 	"github.com/bagashyt/ecom/types"
 	"github.com/bagashyt/ecom/utils"
 	"github.com/gorilla/mux"
@@ -36,8 +37,14 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	// check if the user exist
 	_, err := h.store.GetUserByEmail(payload.Email)
 	if err == nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %s already exists", payload.Email))
+		utils.WriteError(w, http.StatusBadRequest,
+			fmt.Errorf("user with email %s already exists", payload.Email))
 		return
+	}
+
+	hashedPassword, err := auth.HashPassword(payload.Password)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
 
 	// if it doesnt we create the new user
@@ -45,7 +52,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Email:     payload.Email,
-		Password:  payload.Password,
+		Password:  hashedPassword,
 	})
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
