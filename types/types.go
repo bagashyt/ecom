@@ -10,6 +10,14 @@ type UserStore interface {
 	CreateUser(User) error
 }
 
+type ProductStore interface {
+	GetProductByID(id int) (*Product, error)
+	GetProductsByID(ids []int) ([]Product, error)
+	GetProducts() ([]*Product, error)
+	CreateProduct(CreateProductPayload) error
+	UpdateProduct(Product) error
+}
+
 type mockUserStore struct{}
 
 type User struct {
@@ -31,4 +39,22 @@ type RegisterUserPayload struct {
 type LoginUserPayload struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+}
+
+type Product struct {
+	ID          int       `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Image       string    `json:"image"`
+	Price       float64   `json:"price"`
+	Quantity    int       `json:"quantity"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+type CreateProductPayload struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
 }
