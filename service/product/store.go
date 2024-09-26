@@ -2,6 +2,7 @@ package product
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/bagashyt/ecom/types"
 )
@@ -12,6 +13,26 @@ type Store struct {
 
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
+}
+
+// GetProductsByID implements types.ProductStore.
+func (s *Store) GetProductsByID(ids []int) ([]types.Product, error) {
+	panic("unimplemented")
+}
+
+// CreateProduct implements types.ProductStore.
+func (s *Store) CreateProduct(types.CreateProductPayload) error {
+	panic("unimplemented")
+}
+
+// GetProducts implements types.ProductStore.
+func (s *Store) GetProducts() ([]*types.Product, error) {
+	panic("unimplemented")
+}
+
+// UpdateProduct implements types.ProductStore.
+func (s *Store) UpdateProduct(types.Product) error {
+	panic("unimplemented")
 }
 
 func (s *Store) GetProductByID(productID int) (*types.Product, error) {
@@ -26,6 +47,10 @@ func (s *Store) GetProductByID(productID int) (*types.Product, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if p.ID == 0 {
+		return nil, fmt.Errorf("Product not found")
 	}
 	return p, nil
 }
