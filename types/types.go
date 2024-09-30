@@ -18,8 +18,6 @@ type ProductStore interface {
 	UpdateProduct(Product) error
 }
 
-type mockUserStore struct{}
-
 type User struct {
 	ID        int       `json:"id"`
 	FirstName string    `json:"firstName"`
@@ -57,4 +55,13 @@ type CreateProductPayload struct {
 	Image       string  `json:"image"`
 	Price       float64 `json:"price"`
 	Quantity    int     `json:"quantity"`
+}
+
+type Order struct {
+	ID        int       `json:"id"`
+	UserID    int       `json:"userID"`
+	Total     float64   `json:"total"`
+	Status    string    `json:"status"`
+	Address   string    `json:"address"`
+	CreatedAt time.Time `json:"createdAt"`
 }
