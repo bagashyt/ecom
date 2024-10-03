@@ -23,15 +23,6 @@ type OrderStore interface {
 	CreateOrderItem(OrderItem) error
 }
 
-type User struct {
-	ID        int       `json:"id"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	Email     string    `json:"email"`
-	Password  string    `json:"-"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
 type RegisterUserPayload struct {
 	FirstName string `json:"firstName" validate:"required"`
 	LastName  string `json:"lastName" validate:"required"`
@@ -44,6 +35,27 @@ type LoginUserPayload struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type CreateProductPayload struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
+}
+
+type CartCheckoutPayload struct {
+	Items []CartCheckoutItem `json:"items" validate:"required"`
+}
+
+type User struct {
+	ID        int       `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Email     string    `json:"email"`
+	Password  string    `json:"-"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
 type Product struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
@@ -52,14 +64,6 @@ type Product struct {
 	Price       float64   `json:"price"`
 	Quantity    int       `json:"quantity"`
 	CreatedAt   time.Time `json:"createdAt"`
-}
-
-type CreateProductPayload struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Image       string  `json:"image"`
-	Price       float64 `json:"price"`
-	Quantity    int     `json:"quantity"`
 }
 
 type Order struct {
@@ -78,4 +82,9 @@ type OrderItem struct {
 	Quantity  int       `json:"quantity"`
 	Price     float64   `json:"price"`
 	CreatedAt time.Time `json:"createdAt"`
+}
+
+type CartCheckoutItem struct {
+	ProductID int `json:"productID"`
+	Quantity  int `json:"quantity"`
 }
