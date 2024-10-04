@@ -46,3 +46,51 @@ func calculateTotalPrice(cartITems []types.CartCheckoutItem, products map[int]ty
 
 	return total
 }
+
+func (h *Handler) createOrder(products []types.Product, carItems []types.CartCheckoutItem, userID int) (int, float64, error) {
+	// create a map of products for easier access
+
+	productsMap := make(map[int]types.Product)
+	for _, product := range products {
+		productsMap[product.ID] = product
+	}
+
+	// check if all products are available
+	if err := checkIfCartIsInStock(carItems, productsMap); err != nil {
+		return 0, 0, err
+	}
+
+	//calculate total price
+	totalPrie := calculateTotalPrice(carItems, productsMap)
+
+	// reduce the quantity of products in the store
+	for _, item := range carItems {
+		product := productsMap[item.ProductID]
+		product.Quantity -= item.Quantity
+		h.store.UpdateProduct(product)
+	}
+
+	//create order record
+	orderID, err := h.orderStore.CreateOrder(types.Order{
+		UserID:  userID,
+		Total:   totalPrie,
+		Status:  "pending",
+		Address: "some address",
+	})
+	if err != nil {
+		return 0, 0, err
+	}
+
+	//create order the items records
+	for _, item := range carItems {
+		h.orderStore.CreateOrderItem(types.OrderItem{
+			OrderID:   orderID,
+			ProductID: item.ProductID,
+			Quantity:  item.Quantity,
+			Price:     productsMap[item.ProductID].Price,
+		})
+
+	}
+
+	return orderID, totalPrie, nil
+}
