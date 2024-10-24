@@ -31,21 +31,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
 
-  # migrate-down:
-  #   image: migrate/migrate
-  #   networks:
-  #     - new
-  #    volumes:
-  #     - ./cmd/migrate/migrations:/migrations
-  #     - /etc/timezone:/etc/timezone:ro
-  #     - /etc/localtime:/etc/localtime:ro
-  #   command: ["-path", "/migrations", "-database", "${CONNECT_DB}", "-verbose", "down"]
-  #   links:
-  #     - db
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-
   migrate-up:
     image: migrate/migrate
     networks:
@@ -84,8 +69,8 @@ services:
     links:
       - db
     depends_on:
-      db:
-        condition: service_healthy
+      migrate-up:
+        condition: service_completed_successfully
       nginx:
         condition: service_started
 
