@@ -2,32 +2,77 @@ services:
 
   nginx:
     image: nginxproxy/nginx-proxy:1.6
+    networks:
+      - default
     ports:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       HTTPS_METHOD: nohttps
 
   db:
     image: mysql:8.0
+    networks:
+      new:
+        aliases:
+          - database
     healthcheck:
-      test: "exit 0"
+      test: mysqladmin ping -h database -u ${DB_USER} --password=${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "3308:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
 
+  # migrate-down:
+  #   image: migrate/migrate
+  #   networks:
+  #     - new
+  #    volumes:
+  #     - ./cmd/migrate/migrations:/migrations
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   command: ["-path", "/migrations", "-database", "${CONNECT_DB}", "-verbose", "down"]
+  #   links:
+  #     - db
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+
+  migrate-up:
+    image: migrate/migrate
+    networks:
+      - new
+    volumes:
+      - ./cmd/migrate/migrations:/migrations
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    command: ["-path", "/migrations", "-database", "${CONNECT_DB}", "-verbose", "up"]
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+
   api:
+    networks:
+      - new
+      - default
     build: 
       context: .
       dockerfile: Dockerfile
     restart: on-failure
     volumes:
       - .:/go/src/api
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "8080:8080"
     environment:
@@ -39,8 +84,12 @@ services:
     links:
       - db
     depends_on:
-      - db
-      - nginx
+      db:
+        condition: service_healthy
+      nginx:
+        condition: service_started
 
 volumes:
   db_data:
+networks:
+      new:
