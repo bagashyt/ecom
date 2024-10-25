@@ -71,6 +71,8 @@ services:
     depends_on:
       migrate-up:
         condition: service_completed_successfully
+      db:
+        condition: service_healthy
       nginx:
         condition: service_started
 
