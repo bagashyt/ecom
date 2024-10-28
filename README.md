@@ -47,10 +47,10 @@ sudo docker compose up -d
 
 ## Test Api
 
-You can test consume API with Postman or other app.
+You can test consume API with Postman or other apps.
 
-- Register
-End-point: [POST] `http://localhost:8080/v2/register`
+- Register\
+End-point: [**POST**] `http://localhost:8080/v2/register`\
 Body:
 ```json
 {
@@ -61,8 +61,8 @@ Body:
 }
 ```
 
-- Login
-End-point: [POST] `http://localhost:8080/v2/login`
+- Login\
+End-point: [**POST**] `http://localhost:8080/v2/login`\
 Body:
 ```json
 {
@@ -71,12 +71,12 @@ Body:
 }
 ```
 
-- Get List Products
-End-point: [GET] `http://localhost:8080/v2/products`
+- Get List Products\
+End-point: [**GET**] `http://localhost:8080/v2/products`
 
-- Create Product
-End-point: [POST] `http://localhost:8080/v2/products`
-Headers: "Authorization" "token-generated-from-login"
+- Create Product\
+End-point: [**POST**] `http://localhost:8080/v2/products`\
+Headers: "Authorization" "token-generated-from-login"\
 Body:
 ```json
 {
@@ -88,9 +88,9 @@ Body:
 }
 ```
 
-- Order Chart
-End-point: [POST] `http://localhost:8080/v2/cart/checkout`
-Headers: "Authorization" "token-generated-from-login"
+- Order Chart\
+End-point: [**POST**] `http://localhost:8080/v2/cart/checkout`\
+Headers: "Authorization" "token-generated-from-login"\
 Body:
 ```json
 {
