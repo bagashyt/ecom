@@ -18,14 +18,14 @@ type Handler struct {
 }
 
 func NewHandler(store types.ProductStore, userStore types.UserStore) *Handler {
-	return &Handler{store: store}
+	return &Handler{store: store, userStore: userStore}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/products", h.handleGetProducts).Methods(http.MethodGet)
 	router.HandleFunc("/products/{productID}", h.handleGetProduct).Methods(http.MethodGet)
 
-	//admin routes
+	// admin routes
 	router.HandleFunc("/products", auth.WithJWTAuth(h.handleCreateProduct, h.userStore)).Methods(http.MethodPost)
 }
 

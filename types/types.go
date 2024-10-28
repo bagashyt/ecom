@@ -36,11 +36,11 @@ type LoginUserPayload struct {
 }
 
 type CreateProductPayload struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Image       string  `json:"image"`
-	Price       float64 `json:"price"`
-	Quantity    int     `json:"quantity"`
+	Name        string  `json:"name" validate:"required"`
+	Description string  `json:"description" validate:"required"`
+	Image       string  `json:"image" validate:"required"`
+	Price       float64 `json:"price" validate:"required"`
+	Quantity    int     `json:"quantity" validate:"required"`
 }
 
 type CartCheckoutPayload struct {
